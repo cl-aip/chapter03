@@ -1,0 +1,68 @@
+(defun our-member (item list)
+  "This is almost the same function as common lisp's member."
+  (cond ((endp list) nil)                   ; empty list
+        ((equal item (car list)) list)      ; matched to the first
+        (t (our-member item (cdr list)))))  ; else next
+  => our-member
+
+(setq tools '(saw wrench pliers hammer screwdriver)) => (saw wrench pliers hammer screwdriver)
+(our-member 'hammer tools)                           => (hammer screwdriver)
+(trace our-member)                                   => (our-member)
+(our-member 'hammer tools)                           => (hammer screwdriver)
+(untrace)                                            => nil
+
+(defun count-elements (list)
+  (cond ((endp list) 0)
+        (t (1+ (count-elements (cdr list))))))
+  => count-elements
+(trace count-elements)                      => count-elements
+(count-elements '(one two three four five)) => 5
+(untrace)                                   => nil
+
+(setq foo '(a (b c) (d)))        => (a (b c) (d))
+(eq foo (copy-list foo))         => nil
+(equal foo (copy-list foo))      => t
+
+(defun our-copy-list (list)
+  (cond ((endp list) nil)
+        (t (cons (car list)
+                 (our-copy-list (cdr list))))))
+  => our-copy-list
+
+(setq foo '(a (b c) (d)))       => (a (b c) (d))
+(trace our-copy-list)           => (our-copy-list)
+(eq foo (our-copy-list foo))    => nil
+(untrace)                       => nil
+
+(defun sqrt-list (l)
+  (cond ((null l) '())
+        ((< (car l) 0) (sqrt-list (cdr l)))
+        ((= (car l) 0) (cons 0 (sqrt-list (cdr l))))
+        (t (cons (sqrt (car l))
+                 (sqrt-list (cdr l))))))
+  => sqrt-list
+
+(sqrt-list '(-9 0 4 -25))  => (0 2.0)
+(sqrt 4)                   => 2.0
+(= 2 *)                    => t
+(equal 2 (sqrt 4))         => nil
+
+(defun our-copy-tree (list)
+  (cond ((endp list) nil)
+        ((atom (car list))
+         (cons (car list)
+               (our-copy-tree (cdr list))))
+        (t (cons (our-copy-tree (car list))
+                 (our-copy-tree (cdr list))))))
+  => our-copy-tree
+
+(setq sentence
+'(S (N time)
+   (VP (V flies)
+       (PP (P like)
+           (NP (Det an)
+               (N arrow))))))
+ => (S (N time) (VP (V flies) (PP (P like) (NP (Det an) (N arrow)))))
+(trace our-copy-tree)    => (our-copy-tree)
+(our-copy-tree sentence) => (S (N time) (VP (V flies) (PP (P like) (NP (Det a) (N arrow)))))
+
