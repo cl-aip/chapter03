@@ -34,6 +34,16 @@
 (eq foo (our-copy-list foo))    => nil
 (untrace)                       => nil
 
+(defun our-reverse (list)
+  (cond ((null list) '())
+        (t (append (our-reverse (cdr list))
+                   (list (car list))))))
+ => our-reverse
+(our-reverse '(a (b c) d (e f))) => ((e f) d (b c) a)
+(trace our-reverse)              => (our-reverse)
+(our-reverse '(a (b c) d (e f))) => ((e f) d (b c) a)
+(untrace our-reverse)            => (our-reverse)
+
 (defun sqrt-list (l)
   (cond ((null l) '())
         ((< (car l) 0) (sqrt-list (cdr l)))
